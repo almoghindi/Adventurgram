@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ag-auth-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ag-auth
+  template:
+    metadata:
+      labels:
+        app: ag-auth
+    spec:
+      containers:
+        - name: ag-auth
+          image: almoghindi/ag-auth
+          env:
+            - name: MONGO_URI
+              value: "mongodb://ag-auth-mongo-srv:27017/auth?directConnection=true"
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ag-auth-srv
+spec:
+  selector:
+    app: auth
+  type: ClusterIP
+  ports:
+    - name: auth
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
