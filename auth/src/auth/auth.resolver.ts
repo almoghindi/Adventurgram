@@ -1,8 +1,11 @@
-import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Query, Context } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
-import { CreateUserInput } from '../dto/create-user.input';
+import { UserInput } from '../dto/user.input';
 import { LoginUserInput } from '../dto/login-user.input';
 import { LoginResponse } from '../dto/login-response';
+import { JwtPayload } from '../dto/jwt-payload';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../guards/gql-auth.guard';
 
 @Resolver()
 export class AuthResolver {
@@ -15,9 +18,9 @@ export class AuthResolver {
 
   @Mutation(() => LoginResponse)
   async register(
-    @Args('createUserInput') createUserInput: CreateUserInput,
+    @Args('UserInput') userInput: UserInput,
   ): Promise<LoginResponse> {
-    return this.authService.register(createUserInput);
+    return this.authService.register(userInput);
   }
 
   @Mutation(() => LoginResponse)
@@ -25,5 +28,14 @@ export class AuthResolver {
     @Args('loginInput') loginInput: LoginUserInput,
   ): Promise<LoginResponse> {
     return this.authService.login(loginInput);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Query(() => JwtPayload)
+  async getJwtPayload(@Context() context) {
+    return {
+      userId: context.req.user.sub,
+      email: context.req.user.email,
+    };
   }
 }

@@ -14,6 +14,6 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: ag-auth-srv
+                name: auth-srv
                 port:
                   number: 3000

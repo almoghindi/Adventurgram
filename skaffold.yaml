@@ -9,7 +9,7 @@ build:
     push: false
   artifacts:
     - image: almoghindi/ag-auth
-      context: ag-auth
+      context: auth
       docker:
         dockerfile: Dockerfile
       sync:

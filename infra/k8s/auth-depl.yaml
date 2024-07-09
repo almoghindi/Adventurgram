@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ag-auth-depl
+  name: auth-depl
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ag-auth
+      app: auth
   template:
     metadata:
       labels:
-        app: ag-auth
+        app: auth
     spec:
       containers:
-        - name: ag-auth
+        - name: auth
           image: almoghindi/ag-auth
           env:
             - name: MONGO_URI
-              value: "mongodb://ag-auth-mongo-srv:27017/auth?directConnection=true"
+              value: "mongodb://auth-mongo-0.auth-mongo-srv:27017,auth-mongo-1.auth-mongo-srv:27017,auth-mongo-2.auth-mongo-srv:27017/auth?replicaSet=rs0&retryWrites=true&w=majority"
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
@@ -27,7 +27,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ag-auth-srv
+  name: auth-srv
 spec:
   selector:
     app: auth
