@@ -10,6 +10,7 @@ namespace user_profile.DAL.Repositories
         public UserProfileRepository(UserProfileContext ctx)
         {
             _ctx = ctx;
+            _ctx.Database.EnsureCreated();
         }
         public async Task<UserProfile?> FindById(string id)
         {
@@ -18,6 +19,7 @@ namespace user_profile.DAL.Repositories
         public async Task<UserProfile> Create(UserProfile userProfile)
         {
             var user = await _ctx.UserProfiles.AddAsync(userProfile);
+            await _ctx.SaveChangesAsync();
             return user.Entity;
         }
         public async Task<UserProfile> Update(string id, UserProfile userProfile)
@@ -28,6 +30,7 @@ namespace user_profile.DAL.Repositories
             user.Bio = userProfile.Bio;
             user.Location = userProfile.Location;
             user.UpdatedAt = DateTime.Now;
+            _ctx.UserProfiles.Update(user);
             await _ctx.SaveChangesAsync();
             return user;
         }

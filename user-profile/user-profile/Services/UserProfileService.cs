@@ -5,7 +5,7 @@ namespace user_profile.Services
 {
     public class UserProfileService(IUserProfileRepository repository) : IUserProfileService
     {
-        private readonly IUserProfileRepository _repository = repository;
+        private readonly IUserProfileRepository _repository = repository ?? throw new ArgumentNullException();
 
         public async Task<UserProfile> FindById(string id)
         {

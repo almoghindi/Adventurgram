@@ -26,4 +26,22 @@ namespace user_profile.DAL.Models
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
+
+    public class UserProfileRequestBody
+    {
+        public string? UserId { get; set; }
+        [Required]
+        public string? Username { get; set; }
+        [Required]
+        [MaxLength(500)]
+        public string? Bio { get; set; }
+        [Required]
+        [Url]
+        public string? ProfilePic { get; set; }
+        [MaxLength(100)]
+        public string? Location { get; set; }
+
+        public List<string> Followers { get; set; } = [];
+        public List<string> Following { get; set; } = [];
+    }
 }

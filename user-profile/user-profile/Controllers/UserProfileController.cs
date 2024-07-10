@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using user_profile.BL.Exceptions;
+using user_profile.BL.Factories;
 using user_profile.DAL.Models;
 using user_profile.Services;
 
@@ -12,21 +13,23 @@ namespace user_profile.Controllers
     {
 
         private readonly IUserProfileService _userProfileService;
+        private readonly IUserProfileFactory _userProfileFactory;
 
         public UserProfileController(IUserProfileService userProfileService)
         {
             _userProfileService = userProfileService;
+            _userProfileFactory = new UserProfileFactory();
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)
         {
-            if (id == null) throw new BadRequestException("Id is null");
+            if (string.IsNullOrEmpty(id)) throw new BadRequestException("Id is null or empty");
             UserProfile? user = await _userProfileService.FindById(id);
             return Ok(user);
         }
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] UserProfile userProfile)
+        public async Task<IActionResult> Post([FromBody] UserProfileRequestBody userProfile)
         {
             var validationResults = new List<ValidationResult>();
             var context = new ValidationContext(userProfile, null, null);
@@ -35,12 +38,12 @@ namespace user_profile.Controllers
             {
                 throw new RequestValidationException(validationResults);
             }
-
-            var createdUserProfile = await _userProfileService.Create(userProfile);
+            var user = _userProfileFactory.Create(userProfile);
+            var createdUserProfile = await _userProfileService.Create(user);
             return CreatedAtAction(nameof(Get), new { id = createdUserProfile.Id }, createdUserProfile);
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(string id, [FromBody] UserProfile userProfile)
+        public async Task<IActionResult> Put(string id, [FromBody] UserProfileRequestBody userProfile)
         {
             var validationResults = new List<ValidationResult>();
             var context = new ValidationContext(userProfile, null, null);
@@ -49,7 +52,8 @@ namespace user_profile.Controllers
             {
                 throw new RequestValidationException(validationResults);
             }
-            UserProfile updatedUserProfile = await _userProfileService.Update(id, userProfile);
+            var user = _userProfileFactory.Create(userProfile);
+            UserProfile updatedUserProfile = await _userProfileService.Update(id, user);
             return Ok(updatedUserProfile);
         }
         [HttpDelete("{id}")]
