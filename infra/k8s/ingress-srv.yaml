@@ -17,3 +17,11 @@ spec:
                 name: auth-srv
                 port:
                   number: 3000
+          - path: /api/profiles
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: user-profiles-srv
+                port:
+                  number: 3000
+          
