@@ -6,6 +6,7 @@ import { LoginResponse } from '../dto/login-response';
 import { JwtPayload } from '../dto/jwt-payload';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../guards/gql-auth.guard';
+import { Response } from 'express';
 
 @Resolver()
 export class AuthResolver {
@@ -20,22 +21,47 @@ export class AuthResolver {
   async register(
     @Args('UserInput') userInput: UserInput,
   ): Promise<LoginResponse> {
-    return this.authService.register(userInput);
+    const loginResponse = await this.authService.register(userInput);
+
+    return loginResponse;
   }
 
   @Mutation(() => LoginResponse)
   async login(
     @Args('loginInput') loginInput: LoginUserInput,
   ): Promise<LoginResponse> {
-    return this.authService.login(loginInput);
+    return await this.authService.login(loginInput);
   }
 
   @UseGuards(JwtAuthGuard)
   @Query(() => JwtPayload)
   async getJwtPayload(@Context() context) {
+    const user = context.req.user;
     return {
-      userId: context.req.user.sub,
-      email: context.req.user.email,
+      userId: user.sub,
+      email: user.email,
     };
+  }
+
+  @Query(() => String)
+  async googleAuth(@Context() context) {
+    return this.authService.googleLogin(context);
+  }
+
+  @Mutation(() => Boolean)
+  async enableTwoFA(
+    @Args('userId') userId: string,
+    @Args('enable') enable: boolean,
+  ): Promise<boolean> {
+    return this.authService.enableTwoFA(userId, enable);
+  }
+
+  @Mutation(() => String)
+  async verifyTwoFACode(
+    @Args('userId') userId: string,
+    @Args('code') code: string,
+  ): Promise<string> {
+    const response = await this.authService.verifyTwoFACode(userId, code);
+    return response.access_token;
   }
 }

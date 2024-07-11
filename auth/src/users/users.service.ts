@@ -7,15 +7,33 @@ import { User } from '@prisma/client';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: UserInput): Promise<User> {
+  async findOneByEmail(email: string) {
+    return this.prisma.user.findUnique({
+      where: { email },
+    });
+  }
+
+  async findOneById(id: string) {
+    return this.prisma.user.findUnique({
+      where: { id },
+    });
+  }
+
+  async create(data: {
+    email: string;
+    password: string;
+    phone: string;
+    two_fa: boolean;
+  }) {
     return this.prisma.user.create({
       data,
     });
   }
 
-  async findOneByEmail(email: string): Promise<User | null> {
-    return this.prisma.user.findUnique({
-      where: { email },
+  async updateTwoFA(userId: string, enable: boolean) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { two_fa: enable },
     });
   }
 }
