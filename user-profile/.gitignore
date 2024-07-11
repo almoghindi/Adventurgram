@@ -1,0 +1,40 @@
+# Visual Studio files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.sln.ide
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# ASP.NET artifacts
+*.log
+*.sqlite
+*.sqlite3
+
+# Entity Framework
+*.edmx
+*.Designer.cs
+*.Context.cs
+
+# Packages
+*.nupkg
+*.paket.restore.log
+paket-files/
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.sln.ide

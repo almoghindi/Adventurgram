@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: userprofiles-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-profiles
+  template:
+    metadata:
+      labels:
+        app: user-profiles
+    spec:
+      containers:
+        - name: user-profiles
+          image: yonraz/ag-user-profiles
+          env:
+            - name: PSQL_URI
+              value: ""
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-profiles-srv
+spec:
+  selector:
+    app: user-profiles
+  type: ClusterIP
+  ports:
+    - name: user-profiles
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
