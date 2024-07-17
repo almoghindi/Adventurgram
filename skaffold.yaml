@@ -17,7 +17,7 @@ build:
           - src: "src/**/*.ts"
             dest: .
     - image: yonraz/ag-user-profiles
-      context: userProfiles
+      context: user-profile
       docker:
         dockerfile: Dockerfile
       sync:
