@@ -8,7 +8,11 @@ class Program
 {
     public static void Main(string[] args)
     {
+        var password = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
+        Console.WriteLine($"Postgres Password: {password}");
+
         CreateHostBuilder(args).Build().Run();
+        Console.WriteLine("Listening on port 8080");
     }
 
     public static IHostBuilder CreateHostBuilder(string[] args) =>

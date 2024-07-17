@@ -6,7 +6,7 @@ namespace user_profile.DAL.Models
     public class UserProfile
     {
         [Key]
-        public string Id { get; set; }
+        public string? Id { get; set; }
         [Required]
         public string? UserId { get; set; }
         [Required]
@@ -27,8 +27,9 @@ namespace user_profile.DAL.Models
         public DateTime UpdatedAt { get; set; }
     }
 
-    public class UserProfileRequestBody
+     public class UserProfileRequestBody
     {
+        [Required]
         public string? UserId { get; set; }
         [Required]
         public string? Username { get; set; }
@@ -41,7 +42,7 @@ namespace user_profile.DAL.Models
         [MaxLength(100)]
         public string? Location { get; set; }
 
-        public List<string> Followers { get; set; } = [];
-        public List<string> Following { get; set; } = [];
+        public List<string> Followers { get; set; } = new List<string>();
+        public List<string> Following { get; set; } = new List<string>();
     }
 }
