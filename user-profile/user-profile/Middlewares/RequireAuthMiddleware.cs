@@ -23,54 +23,14 @@ public class RequireAuthMiddleware
             return;
         }
 
-        if (!context.Request.Cookies.ContainsKey("SessionCookie"))
+        if (context.Items["CurrentUser"] == null)
         {
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
             await context.Response.WriteAsync("Unauthorized");
             return;
         }
 
-        var token = context.Request.Cookies["SessionCookie"];
-        if (token == null || !ValidateToken(token))
-        {
-            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            await context.Response.WriteAsync("Invalid session");
-            return;
-        }
-
         await _next(context);
-    }
-
-    private bool ValidateToken(string token)
-    {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Environment.GetEnvironmentVariable("JWT_KEY");
-
-        if (string.IsNullOrEmpty(key))
-        {
-            throw new Exception("JWT key is not found.");
-        }
-
-        var keyBytes = Encoding.ASCII.GetBytes(key);
-
-        try
-        {
-            tokenHandler.ValidateToken(token, new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                // Set clockskew to zero so tokens expire exactly at token expiration time
-                ClockSkew = TimeSpan.Zero
-            }, out SecurityToken validatedToken);
-
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
     }
 }
 

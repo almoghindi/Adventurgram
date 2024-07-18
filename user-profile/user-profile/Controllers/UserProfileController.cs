@@ -38,7 +38,7 @@ namespace user_profile.Controllers
             {
                 throw new RequestValidationException(validationResults);
             }
-            var user = _userProfileFactory.Create(userProfile);
+            var user = _userProfileFactory.CreateFromRequest(userProfile);
             var createdUserProfile = await _userProfileService.Create(user);
             return CreatedAtAction(nameof(Get), new { id = createdUserProfile.Id }, createdUserProfile);
         }
@@ -52,7 +52,7 @@ namespace user_profile.Controllers
             {
                 throw new RequestValidationException(validationResults);
             }
-            var user = _userProfileFactory.Create(userProfile);
+            var user = _userProfileFactory.CreateFromRequest(userProfile);
             UserProfile updatedUserProfile = await _userProfileService.Update(id, user);
             return Ok(updatedUserProfile);
         }

@@ -1,14 +1,14 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.OpenApi.Models;
 using user_profile.DAL.Data;
 using user_profile.DAL.Repositories;
 using user_profile.Middlewares;
 using user_profile.Services;
 using Npgsql;
-using System.Net;
+using KafkaFlow;
+using KafkaFlow.Serializer;
+using user_profile.Events.Producers;
 
 namespace user_profile
 {
@@ -37,6 +37,23 @@ namespace user_profile
             services.AddSwaggerGen();
             services.AddScoped<IUserProfileRepository, UserProfileRepository>();
             services.AddScoped<IUserProfileService, UserProfileService>();
+
+            try
+            {
+                services.AddKafka(kafka =>
+                    kafka.AddCluster(cluster =>
+                    {
+                        string[] topics = { "user-profile-created", "user-profile-updated", "user-logged-in" };
+                        cluster.WithBrokers(new[] { "kafka-srv:9092" });
+                        topics.ToList().ForEach(topic => cluster.CreateTopicIfNotExists(topic));
+                        cluster.AddProducer<UserProfileUpdatedProducer>(producer => producer.DefaultTopic("user-profile-updated").AddMiddlewares(middlewares => middlewares.AddSerializer<NewtonsoftJsonSerializer>()));
+                    }));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error while adding Kafka: ");
+                Console.WriteLine(e.Message);
+            }
 
             services.Configure<ForwardedHeadersOptions>(options =>
             {
@@ -69,7 +86,8 @@ namespace user_profile
             app.UseAuthorization();
             app.UseCors("CorsPolicy");
             app.UseMiddleware<ExceptionHandler>();
-            app.UseMiddleware<RequireAuthMiddleware>();
+            app.UseCurrentUserMiddleware();
+            app.UseRequireAuthMiddleware();
 
             app.UseEndpoints(endpoints =>
             {
