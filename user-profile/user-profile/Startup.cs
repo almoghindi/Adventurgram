@@ -37,16 +37,6 @@ namespace user_profile
             services.AddSwaggerGen();
             services.AddScoped<IUserProfileRepository, UserProfileRepository>();
             services.AddScoped<IUserProfileService, UserProfileService>();
-           
-            // services.Configure<KestrelServerOptions>(options =>
-            // {
-            //     options.Listen(IPAddress.Any, 8081, listenOptions =>
-            //     {
-            //         listenOptions.UseHttps();
-            //     });
-            //     options.Listen(IPAddress.Any, 8080);
-            // });
-
 
             services.Configure<ForwardedHeadersOptions>(options =>
             {
@@ -79,6 +69,7 @@ namespace user_profile
             app.UseAuthorization();
             app.UseCors("CorsPolicy");
             app.UseMiddleware<ExceptionHandler>();
+            app.UseMiddleware<RequireAuthMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
