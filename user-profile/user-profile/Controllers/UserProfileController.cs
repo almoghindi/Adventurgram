@@ -7,7 +7,7 @@ using user_profile.Services;
 
 namespace user_profile.Controllers
 {
-    [Route("api/profiles")]
+    [Route("/api/profiles")]
     [ApiController]
     public class UserProfileController : ControllerBase
     {
