@@ -16,8 +16,6 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
-<<<<<<< HEAD
-=======
     - image: yonraz/ag-user-profiles
       context: user-profile
       docker:
@@ -26,13 +24,3 @@ build:
         manual:
           - src: "**/*.cs"
             dest: .
->>>>>>> 90cf398c56c0b5db335fc966a67b52f59658bbf8
-
-    # - image: yonraz/ag-user-profiles
-    #   context: userProfiles
-    #   docker:
-    #     dockerfile: Dockerfile
-    #   sync:
-    #     manual:
-    #       - src: "**/*.cs"
-    #         dest: .
