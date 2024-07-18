@@ -16,13 +16,12 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
-    - image: yonraz/ag-user-profiles
-      context: userProfiles
-      docker:
-        dockerfile: Dockerfile
-      sync:
-        manual:
-          - src: "**/*.cs"
-            dest: .
 
-    
+    # - image: yonraz/ag-user-profiles
+    #   context: userProfiles
+    #   docker:
+    #     dockerfile: Dockerfile
+    #   sync:
+    #     manual:
+    #       - src: "**/*.cs"
+    #         dest: .

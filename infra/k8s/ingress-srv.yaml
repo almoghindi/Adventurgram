@@ -4,12 +4,26 @@ metadata:
   name: ingress-service
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
-    kubernetes.io/ingress.class: "nginx"
+    spec.ingressClassName: "nginx"
 spec:
   rules:
     - host: ticketing.dev
       http:
         paths:
+          - path: /elasticsearch
+            pathType: Prefix
+            backend:
+              service:
+                name: elasticsearch
+                port:
+                  number: 9200
+          - path: /grafana
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  number: 3000
           - path: /graphql
             pathType: ImplementationSpecific
             backend:
@@ -17,11 +31,10 @@ spec:
                 name: auth-srv
                 port:
                   number: 3000
-          - path: /api/profiles
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: user-profiles-srv
-                port:
-                  number: 3000
-          
+            # - path: /api/profiles
+            #   pathType: ImplementationSpecific
+            #   backend:
+            #     service:
+            #       name: user-profiles-srv
+            #       port:
+            #         number: 3000
