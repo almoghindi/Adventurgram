@@ -1,4 +1,5 @@
 ﻿using user_profile.DAL.Models;
+using user_profile.Events.Consumers;
 
 namespace user_profile.BL.Factories
 {
@@ -21,7 +22,7 @@ namespace user_profile.BL.Factories
             };
         }
 
-        public UserProfile Create(UserProfileRequestBody userProfile)
+        public UserProfile CreateFromRequest(UserProfileRequestBody userProfile)
         {
             return new UserProfile
             {
@@ -35,6 +36,17 @@ namespace user_profile.BL.Factories
                 Following = [],
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
+            };
+        }
+
+        public UserProfile CreateFromRegistration(UserRegistered message)
+        {
+            return new UserProfile
+            {
+                Id = Guid.NewGuid().ToString(),
+                UserId = message.id,
+                Username = message.username,
+                ProfilePic = "https://moonvillageassociation.org/wp-content/uploads/2018/06/default-profile-picture1-768x768.jpg",
             };
         }
     }

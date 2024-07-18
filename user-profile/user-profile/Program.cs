@@ -9,6 +9,7 @@ class Program
     public static void Main(string[] args)
     {
         CreateHostBuilder(args).Build().Run();
+        Console.WriteLine("Listening on port 8080");
     }
 
     public static IHostBuilder CreateHostBuilder(string[] args) =>

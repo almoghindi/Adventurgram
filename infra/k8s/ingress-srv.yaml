@@ -7,7 +7,7 @@ metadata:
     spec.ingressClassName: "nginx"
 spec:
   rules:
-    - host: ticketing.dev
+    - host: ag.dev
       http:
         paths:
           - path: /elasticsearch
@@ -31,6 +31,7 @@ spec:
                 name: auth-srv
                 port:
                   number: 3000
+<<<<<<< HEAD
             # - path: /api/profiles
             #   pathType: ImplementationSpecific
             #   backend:
@@ -38,3 +39,12 @@ spec:
             #       name: user-profiles-srv
             #       port:
             #         number: 3000
+=======
+          - path: /api/profiles
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: user-profiles-srv
+                port:
+                  number: 8080
+>>>>>>> 90cf398c56c0b5db335fc966a67b52f59658bbf8

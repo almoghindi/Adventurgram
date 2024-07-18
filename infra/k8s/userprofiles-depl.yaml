@@ -23,6 +23,11 @@ spec:
                 secretKeyRef:
                   name: jwt-secret
                   key: JWT_KEY
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_KEY
 ---
 apiVersion: v1
 kind: Service
@@ -35,5 +40,10 @@ spec:
   ports:
     - name: user-profiles
       protocol: TCP
+<<<<<<< HEAD
       port: 3000
       targetPort: 3000
+=======
+      port: 8080
+      targetPort: 8080
+>>>>>>> 90cf398c56c0b5db335fc966a67b52f59658bbf8

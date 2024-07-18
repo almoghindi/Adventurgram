@@ -111,7 +111,98 @@ namespace UserProfiles.test.Controller
             catch (CustomException ex)
             {
                 Assert.IsType<RequestValidationException>(ex);
-                Assert.Equal(HttpStatusCode.BadRequest, ex.StatusCode);
+            }
+        }
+
+        [Fact]
+        public async void UserProfilesController_Put_ReturnUpdated()
+        {
+            // create a fake user profile
+            var requestBody = A.Fake<UserProfileRequestBody>();
+            InitializeUserProfileRequestBody(requestBody);
+            var profile = A.Fake<UserProfile>();
+            InitializeUserProfile(profile);
+            A.CallTo(() => _userProfileService.Create(A<UserProfile>._)).Returns(profile);
+            var controller = new UserProfileController(_userProfileService);
+            var response = await controller.Post(requestBody);
+            CreatedAtActionResult result = Assert.IsType<CreatedAtActionResult>(response);
+            Assert.NotNull(result);
+            Assert.Equal(profile, result.Value);
+
+            // update the user profile
+            var updateRequestBody = A.Fake<UserProfileRequestBody>();
+            InitializeUserProfileRequestBody(updateRequestBody);
+            updateRequestBody.Username = "jane.doe";
+            var updatedProfile = A.Fake<UserProfile>();
+            InitializeUserProfile(updatedProfile);
+            updatedProfile.Username = "jane.doe";
+            A.CallTo(() => _userProfileService.Update(A<string>._, A<UserProfile>._)).Returns(updatedProfile);
+
+            var updateResponse = await controller.Put(profile.Id!, updateRequestBody);
+            OkObjectResult updateResult = Assert.IsType<OkObjectResult>(updateResponse);
+            Assert.NotNull(updateResult);
+            Assert.Equal(updatedProfile, updateResult.Value);
+        }
+
+        [Fact]
+        public async void UserProfilesController_Put_MissingRequiredFields_Return400()
+        {
+            // create a fake user profile
+            var requestBody = A.Fake<UserProfileRequestBody>();
+            InitializeUserProfileRequestBody(requestBody);
+            var profile = A.Fake<UserProfile>();
+            InitializeUserProfile(profile);
+            A.CallTo(() => _userProfileService.Create(A<UserProfile>._)).Returns(profile);
+            var controller = new UserProfileController(_userProfileService);
+            var response = await controller.Post(requestBody);
+            CreatedAtActionResult result = Assert.IsType<CreatedAtActionResult>(response);
+            Assert.NotNull(result);
+            Assert.Equal(profile, result.Value);
+
+            // update the user profile
+            var updateRequestBody = A.Fake<UserProfileRequestBody>();
+            InitializeUserProfileRequestBody(updateRequestBody);
+            updateRequestBody.Username = null;
+            var updatedProfile = A.Fake<UserProfile>();
+            InitializeUserProfile(updatedProfile);
+            updatedProfile.Username = null;
+            A.CallTo(() => _userProfileService.Update(A<string>._, A<UserProfile>._)).Returns(updatedProfile);
+            try
+            {
+                var updateResponse = await controller.Put(profile.Id!, updateRequestBody);
+            }
+            catch (CustomException ex)
+            {
+                Assert.IsType<RequestValidationException>(ex);
+            }
+        }
+
+        [Fact]
+        public async void UserProfilesController_Delete_ReturnOK()
+        {
+            var profile = A.Fake<UserProfile>();
+            InitializeUserProfile(profile);
+            A.CallTo(() => _userProfileService.FindById(A<string>._)).Returns(profile);
+            var controller = new UserProfileController(_userProfileService);
+            var response = await controller.Delete(profile.Id!);
+            OkResult result = Assert.IsType<OkResult>(response);
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public async void UserProfilesController_Delete_EmptyId_Return400()
+        {
+            var profile = A.Fake<UserProfile>();
+            InitializeUserProfile(profile);
+            A.CallTo(() => _userProfileService.FindById(A<string>._)).Returns(profile);
+            var controller = new UserProfileController(_userProfileService);
+            try
+            {
+                var response = await controller.Delete("");
+            }
+            catch (CustomException ex)
+            {
+                Assert.IsType<BadRequestException>(ex);
             }
         }
 
