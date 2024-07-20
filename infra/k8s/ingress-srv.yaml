@@ -10,20 +10,6 @@ spec:
     - host: ag.dev
       http:
         paths:
-          - path: /elasticsearch
-            pathType: Prefix
-            backend:
-              service:
-                name: elasticsearch
-                port:
-                  number: 9200
-          - path: /grafana
-            pathType: Prefix
-            backend:
-              service:
-                name: grafana
-                port:
-                  number: 3000
           - path: /graphql
             pathType: ImplementationSpecific
             backend:

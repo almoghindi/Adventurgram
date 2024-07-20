@@ -1,16 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
-
 import { Vonage } from '@vonage/server-sdk';
+import { WinstonLoggerService } from '../winston-logger.service';
 
 @Injectable()
 export class VonageService {
   private vonage: Vonage;
 
   constructor(
-    private configService: ConfigService,
     private prisma: PrismaService,
+    private readonly logger: WinstonLoggerService,
   ) {
     this.vonage = new Vonage(
       //@ts-ignore
@@ -27,6 +26,8 @@ export class VonageService {
       const verificationCode = this.generateSixDigitCode();
       const text = `Your verification code is: ${verificationCode}`;
       const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+
+      this.logger.log(`Creating verification code for user ${userId}`);
       await this.prisma.verificationCode.create({
         data: {
           userId,
@@ -35,6 +36,7 @@ export class VonageService {
         },
       });
 
+      this.logger.log(`Sending SMS to ${to}`);
       const response = await this.vonage.sms.send({ to, from, text });
       if (response.messages[0].status !== '0') {
         throw new Error(
@@ -42,30 +44,36 @@ export class VonageService {
         );
       }
 
+      this.logger.log(`Verification code sent to ${to}`);
       return verificationCode;
     } catch (error) {
-      console.error(`Failed to send SMS: ${error.message}`);
+      this.logger.error(`Failed to send SMS: ${error.message}`);
       throw error;
     }
   }
 
   async verifyCode(receivedCode: string): Promise<boolean> {
+    this.logger.log(`Verifying code: ${receivedCode}`);
     const sentCode = await this.prisma.verificationCode.findFirst({
       where: { code: receivedCode },
     });
 
     if (!sentCode) {
+      this.logger.warn(`Invalid verification code: ${receivedCode}`);
       throw new Error('Invalid verification code');
     }
 
     if (sentCode.expiresAt < new Date()) {
+      this.logger.warn(`Expired verification code: ${receivedCode}`);
       throw new Error('Expired verification code');
     }
 
     if (sentCode.code === receivedCode) {
+      this.logger.log(`Verification code valid: ${receivedCode}`);
       await this.prisma.verificationCode.delete({ where: { id: sentCode.id } });
       return true;
     }
+    this.logger.warn(`Verification code mismatch: ${receivedCode}`);
     return false;
   }
 

@@ -4,6 +4,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { WinstonLoggerService } from './winston-logger.service';
 
 @Module({
   imports: [
@@ -14,5 +15,7 @@ import { PrismaModule } from './prisma/prisma.module';
     AuthModule,
     PrismaModule,
   ],
+  providers: [WinstonLoggerService],
+  exports: [WinstonLoggerService],
 })
 export class AppModule {}

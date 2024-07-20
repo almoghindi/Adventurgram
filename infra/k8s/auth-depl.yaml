@@ -15,6 +15,13 @@ spec:
       containers:
         - name: auth
           image: almoghindi/ag-auth
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1024Mi"
+              cpu: "1000m"
           env:
             - name: MONGO_URI
               value: "mongodb://auth-mongo-0.auth-mongo-srv:27017,auth-mongo-1.auth-mongo-srv:27017,auth-mongo-2.auth-mongo-srv:27017/auth?replicaSet=rs0&retryWrites=true&w=majority"
