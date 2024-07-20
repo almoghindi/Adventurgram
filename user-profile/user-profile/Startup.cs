@@ -43,7 +43,7 @@ namespace user_profile
                 services.AddKafka(kafka =>
                     kafka.AddCluster(cluster =>
                     {
-                        string[] topics = { "user-profile-created", "user-profile-updated", "user-logged-in" };
+                        string[] topics = { "user-registered", "user-profile-updated", "user-logged-in" };
                         cluster.WithBrokers(new[] { "kafka-srv:9092" });
                         topics.ToList().ForEach(topic => cluster.CreateTopicIfNotExists(topic));
                         cluster.AddProducer<UserProfileUpdatedProducer>(producer => producer.DefaultTopic("user-profile-updated").AddMiddlewares(middlewares => middlewares.AddSerializer<NewtonsoftJsonSerializer>()));
