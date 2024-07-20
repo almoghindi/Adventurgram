@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-apiVersion: skaffold/v2beta15
-=======
 apiVersion: skaffold/v4beta10
->>>>>>> 697c73ab25c5c92b4158cb38ef02dc419371b7e6
 kind: Config
 build:
   artifacts:
@@ -18,7 +14,7 @@ build:
       context: user-profile
       sync:
         manual:
-          - src: '**/*.cs'
+          - src: "**/*.cs"
             dest: .
       docker:
         dockerfile: Dockerfile

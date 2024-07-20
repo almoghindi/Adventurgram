@@ -15,6 +15,14 @@ async function bootstrap() {
     throw new Error('MONGO_URI must be defined');
   }
 
+  if (!process.env.VONAGE_API_KEY) {
+    throw new Error('VONAGE_API_KEY must be defined');
+  }
+
+  if (!process.env.VONAGE_API_SECRET) {
+    throw new Error('VONAGE_API_SECRET must be defined');
+  }
+
   const app = await NestFactory.create(AppModule, {
     logger: new WinstonLoggerService(),
   });

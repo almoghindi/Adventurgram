@@ -2,20 +2,22 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Vonage } from '@vonage/server-sdk';
 import { WinstonLoggerService } from '../winston-logger.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class VonageService {
   private vonage: Vonage;
 
   constructor(
+    private configService: ConfigService,
     private prisma: PrismaService,
     private readonly logger: WinstonLoggerService,
   ) {
     this.vonage = new Vonage(
       //@ts-ignore
       {
-        apiKey: 'be76dda7',
-        apiSecret: 'K7oO5bmfbHEwNfV4',
+        apiKey: this.configService.get<string>('VONAGE_API_KEY'),
+        apiSecret: this.configService.get<string>('VONAGE_API_SECRET'),
       },
     );
   }

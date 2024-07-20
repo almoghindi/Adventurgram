@@ -40,6 +40,16 @@ spec:
                 secretKeyRef:
                   name: google-client-id
                   key: JGOOGLE_CLIENT_ID
+            - name: VONAGE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: vonage-secret
+                  key: VONAGE_API_KEY
+            - name: VONAGE_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: vonage-secret
+                  key: VONAGE_API_SECRET
 ---
 apiVersion: v1
 kind: Service

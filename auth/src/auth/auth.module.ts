@@ -10,6 +10,7 @@ import { UsersService } from '../users/users.service';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { VonageService } from 'src/vonage/vonage.service';
 import { ConfigService } from '@nestjs/config';
+import { WinstonLoggerService } from 'src/winston-logger.service';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ConfigService } from '@nestjs/config';
     GoogleStrategy,
     VonageService,
     ConfigService,
+    WinstonLoggerService,
   ],
 })
 export class AuthModule {}
