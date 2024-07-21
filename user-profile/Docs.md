@@ -42,7 +42,7 @@ The User Profile service is responsible for managing user profiles in the Advent
 
 - **Mock Request:**
 - **Endpoint:** `/api/profiles`
-- **Method:** PUT
+- **Method:** POST
 - **Requirements:** A token either in the form of a cookie or auth header.
 - **Headers:** 
     Content-type: application/json
