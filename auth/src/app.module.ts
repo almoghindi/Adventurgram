@@ -5,6 +5,7 @@ import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { WinstonLoggerService } from './winston-logger.service';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { WinstonLoggerService } from './winston-logger.service';
     }),
     AuthModule,
     PrismaModule,
+    UsersModule,
   ],
   providers: [WinstonLoggerService],
   exports: [WinstonLoggerService],

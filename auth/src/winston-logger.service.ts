@@ -15,7 +15,6 @@ export class WinstonLoggerService implements LoggerService {
   }
 
   error(message: string, trace?: string) {
-    // Make trace optional
     if (trace) {
       this.logger.error(message, { trace });
     } else {
