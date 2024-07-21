@@ -39,7 +39,7 @@ namespace user_profile.BL.Factories
             };
         }
 
-        public UserProfile CreateFromRegistration(UserRegistered message)
+        public UserProfile CreateFromRegistration(UserRegisteredMessage message)
         {
             return new UserProfile
             {
