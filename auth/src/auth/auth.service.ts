@@ -48,7 +48,7 @@ export class AuthService {
     if (user.two_fa) {
       this.logger.log(
         'Two-factor authentication enabled, sending verification code',
-      ); // Log the action
+      );
       await this.vonageService.sendVerificationCode(user.id, user.phone);
       return {
         access_token: '',
