@@ -1,11 +1,12 @@
 ﻿using KafkaFlow;
+using Newtonsoft.Json;
 using user_profile.BL.Factories;
 using user_profile.DAL.Models;
 using user_profile.Services;
 
 namespace user_profile.Events.Consumers
 {
-    public class UserRegisteredConsumer : IMessageHandler<UserRegistered>
+    public class UserRegisteredConsumer : IMessageHandler
     {
         private readonly IUserProfileService _userProfileService;
         private readonly IUserProfileFactory _userProfileFactory;
@@ -16,11 +17,12 @@ namespace user_profile.Events.Consumers
             _userProfileFactory = new UserProfileFactory();
         }
 
-        public async Task Handle(IMessageContext context, UserRegistered message)
+        public async Task Handle(IMessageContext context, string message)
         {
             try
             {
-                var userProfile = _userProfileFactory.CreateFromRegistration(message);
+                var parsedMessage = JsonConvert.DeserializeObject<UserRegisteredMessage>(message) ?? throw new Exception("Error parsing UserRegistered event");
+                var userProfile = _userProfileFactory.CreateFromRegistration(parsedMessage);
                 await _userProfileService.Create(userProfile);
             }
             catch (Exception ex)
@@ -30,7 +32,7 @@ namespace user_profile.Events.Consumers
         }
     }
 
-    public class UserRegistered
+    public class UserRegisteredMessage
     {
         public string id { get; set; }
         public string username { get; set; }

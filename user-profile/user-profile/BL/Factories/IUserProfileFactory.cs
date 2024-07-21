@@ -7,6 +7,6 @@ namespace user_profile.BL.Factories
     {
         UserProfile Create(string username, string userId, string profilePic, string location, string? bio);
         UserProfile CreateFromRequest(UserProfileRequestBody userProfile);
-        UserProfile CreateFromRegistration(UserRegistered userRegistered);
+        UserProfile CreateFromRegistration(UserRegisteredMessage userRegistered);
     }
 }
